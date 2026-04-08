@@ -42,3 +42,47 @@ export interface ModeConfig {
   bgLight: string;
   borderLight: string;
 }
+// ============================================
+// Tipos para o Assessment (Dashboard)
+// ============================================
+
+export interface UploadedFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  uploadDate: string;
+  status: 'processing' | 'ready' | 'error';
+  content?: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  sources?: Source[];
+}
+
+export interface Source {
+  fileName: string;
+  page?: number;
+  content: string;
+}
+
+export interface DocumentType {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  context: 'governance' | 'devops' | 'full';
+  template: string;
+}
+
+export interface AssessmentState {
+  projectId: string;
+  files: UploadedFile[];
+  messages: ChatMessage[];
+  selectedDocType: DocumentType | null;
+  isLoading: boolean;
+}

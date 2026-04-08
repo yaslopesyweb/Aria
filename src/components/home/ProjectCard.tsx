@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Project } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -9,7 +10,6 @@ import { useMode } from '@/contexts/ModeContext';
 
 interface ProjectCardProps {
   project: Project;
-  onOpen: (id: string) => void;
   onMenu: (event: React.MouseEvent, id: string) => void;
 }
 
@@ -25,11 +25,16 @@ const statusConfig = {
   done: { label: 'Concluído', color: 'bg-green-100 dark:bg-green-950/50 text-green-600 dark:text-green-400' },
 };
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpen, onMenu }) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onMenu }) => {
+  const navigate = useNavigate();
   const { mode } = useMode();
   const context = contextConfig[project.context];
   const status = statusConfig[project.status];
   const IconComponent = context.icon;
+
+  const handleOpen = () => {
+    navigate(`/assessment/${project.id}`);
+  };
 
   return (
     <div 
@@ -79,7 +84,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpen, onMen
             {project.date}
           </div>
           <button
-            onClick={() => onOpen(project.id)}
+            onClick={handleOpen}
             className="flex items-center gap-1.5 text-sm font-medium transition-all duration-200 group-hover:gap-2"
             style={{ color: mode.accentColor }}
           >

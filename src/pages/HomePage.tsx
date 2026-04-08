@@ -8,7 +8,7 @@ import { Button } from '@/components/common/Button';
 import { Plus, Search, Sun, Moon, FolderOpen, Sparkles, Shield, Cloud, Layers } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
-  const { projects, deleteProject } = useProjects();
+  const { projects } = useProjects();
   const { theme, toggleTheme } = useTheme();
   const { mode, toggleMode } = useMode();
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,12 +34,6 @@ export const HomePage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Tem certeza que deseja excluir este projeto?')) {
-      deleteProject(id);
-    }
-  };
-
   const handleMenu = (event: React.MouseEvent, id: string) => {
     event.stopPropagation();
     handleEdit(id);
@@ -60,16 +54,16 @@ export const HomePage: React.FC = () => {
       <header className="sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-950/60">
         <div className="flex items-center justify-between h-16 px-6">
           <div className="flex items-center gap-4">
-            <div 
+            <div
               className="w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 shadow-lg"
-              style={{ 
+              style={{
                 background: `linear-gradient(135deg, ${mode.gradientFrom}, ${mode.gradientTo})`,
               }}
               onClick={toggleMode}
             >
               {getModeIcon()}
             </div>
-            
+
             <div>
               <span className="font-bold text-xl bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
                 ARIA
@@ -81,11 +75,11 @@ export const HomePage: React.FC = () => {
               onClick={toggleMode}
               className={`
                 ml-4 flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300
-                ${mode.id === 'governance' 
-                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-950/60' 
+                ${mode.id === 'governance'
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-950/60'
                   : mode.id === 'devops'
-                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/60'
-                  : 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/60'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/60'
+                    : 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-950/60'
                 }
               `}
             >
@@ -109,9 +103,9 @@ export const HomePage: React.FC = () => {
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-3">
-            <div 
+            <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md"
-              style={{ 
+              style={{
                 background: `linear-gradient(135deg, ${mode.gradientFrom}, ${mode.gradientTo})`,
               }}
             >
@@ -126,7 +120,7 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full" style={{ backgroundColor: `${mode.accentColor}15` }}>
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: mode.accentColor }} />
             <span className="text-sm font-medium" style={{ color: mode.accentColor }}>
@@ -149,21 +143,21 @@ export const HomePage: React.FC = () => {
           >
             Novo Projeto
           </Button>
-          
+
           {/* Search Bar - Versão com ícone visível */}
           <div className="relative w-80">
             {/* Ícone da lupa - container separado */}
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <Search className="h-4 w-4 text-gray-400 dark:text-gray-500" />
             </div>
-            
+
             <input
               type="text"
               placeholder="Buscar projetos por nome ou cliente..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
-              style={{ 
+              style={{
                 paddingLeft: '36px',
                 paddingRight: searchQuery ? '32px' : '16px',
               }}
@@ -178,7 +172,7 @@ export const HomePage: React.FC = () => {
                 }
               }}
             />
-            
+
             {/* Botão limpar busca - só aparece quando tem texto */}
             {searchQuery && (
               <button
@@ -232,14 +226,14 @@ export const HomePage: React.FC = () => {
               {searchQuery ? 'Nenhum projeto encontrado' : 'Nenhum projeto criado'}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-              {searchQuery 
-                ? `Nenhum projeto corresponde a "${searchQuery}"` 
+              {searchQuery
+                ? `Nenhum projeto corresponde a "${searchQuery}"`
                 : 'Clique em "Novo Projeto" para começar.'}
             </p>
             {!searchQuery && (
-              <Button 
-                variant="primary" 
-                icon={<Plus className="h-4 w-4" />} 
+              <Button
+                variant="primary"
+                icon={<Plus className="h-4 w-4" />}
                 onClick={() => setIsModalOpen(true)}
               >
                 Criar primeiro projeto
@@ -259,7 +253,6 @@ export const HomePage: React.FC = () => {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  onOpen={(id) => console.log('Open project:', id)}
                   onMenu={handleMenu}
                 />
               ))}
@@ -271,7 +264,7 @@ export const HomePage: React.FC = () => {
                     setIsModalOpen(true);
                   }}
                   className="group relative overflow-hidden rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 p-6 flex flex-col items-center justify-center gap-3 min-h-[280px] hover:border-opacity-100 transition-all duration-300 hover:scale-[1.02]"
-                  style={{ 
+                  style={{
                     borderColor: mode.accentColor,
                     backgroundColor: `${mode.accentColor}08`
                   }}
