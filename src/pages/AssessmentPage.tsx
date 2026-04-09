@@ -68,7 +68,7 @@ const FileUpload: React.FC = () => {
             <p className="text-sm font-semibold" style={{ color: mode.accentColor }}>
                 Adicionar Documentos
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 PDF, DOCX, XLSX, TXT
             </p>
         </div>
@@ -77,63 +77,86 @@ const FileUpload: React.FC = () => {
 
 const FileList: React.FC = () => {
     const { files, removeFile } = useAssessment();
+    const { theme } = useTheme();
+
+    // Calcular tamanho total
+    const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+    const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
 
     if (files.length === 0) {
         return (
-            <div className="text-center py-12">
-                <div className="w-14 h-14 rounded-xl bg-gray-800 flex items-center justify-center mx-auto mb-3">
-                    <FileText className="h-7 w-7 text-gray-500" />
+            <>
+                <div className="flex-1 overflow-y-auto p-3">
+                    <div className="text-center py-12">
+                        <div className="w-14 h-14 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-3">
+                            <FileText className="h-7 w-7 text-gray-400" />
+                        </div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Nenhum documento carregado
+                        </p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                            Clique acima para adicionar arquivos
+                        </p>
+                    </div>
                 </div>
-                <p className="text-sm text-gray-400">
-                    Nenhum documento carregado
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                    Clique acima para adicionar arquivos
-                </p>
-            </div>
+                <div className="p-3 border-t border-gray-200 dark:border-gray-800">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                        0 documentos • 0 MB
+                    </div>
+                </div>
+            </>
         );
     }
 
     return (
-        <div className="space-y-2">
-            {files.map((file) => (
-                <div
-                    key={file.id}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-800/50 hover:bg-gray-800 transition-all group"
-                >
-                    <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0">
-                        <FileText className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-200 truncate">
-                            {file.name}
-                        </p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-gray-500">
-                                {(file.size / 1024).toFixed(1)} KB
-                            </span>
-                            {file.status === 'ready' ? (
-                                <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                    <span className="text-[10px] text-green-400">Pronto</span>
+        <>
+            <div className="flex-1 overflow-y-auto p-3">
+                <div className="space-y-2">
+                    {files.map((file) => (
+                        <div
+                            key={file.id}
+                            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all group"
+                        >
+                            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                                <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">
+                                    {file.name}
+                                </p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="text-xs text-gray-500 dark:text-gray-500">
+                                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                                    </span>
+                                    {file.status === 'ready' ? (
+                                        <div className="flex items-center gap-1">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                            <span className="text-[10px] text-green-600 dark:text-green-400">Pronto</span>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-1">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+                                            <span className="text-[10px] text-yellow-600 dark:text-yellow-400">Processando</span>
+                                        </div>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                                    <span className="text-[10px] text-yellow-400">Processando</span>
-                                </div>
-                            )}
+                            </div>
+                            <button
+                                onClick={() => removeFile(file.id)}
+                                className="opacity-0 group-hover:opacity-100 transition-all p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+                            >
+                                <Trash2 className="h-4 w-4 text-gray-400 hover:text-red-500" />
+                            </button>
                         </div>
-                    </div>
-                    <button
-                        onClick={() => removeFile(file.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-all p-1.5 rounded-lg hover:bg-gray-700"
-                    >
-                        <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-400" />
-                    </button>
+                    ))}
                 </div>
-            ))}
-        </div>
+            </div>
+            <div className="p-3 border-t border-gray-200 dark:border-gray-800">
+                <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                    {files.length} documento(s) • {totalSizeMB} MB
+                </div>
+            </div>
+        </>
     );
 };
 
@@ -143,11 +166,14 @@ const FileList: React.FC = () => {
 
 const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
     const { mode } = useMode();
+    const { theme } = useTheme();
     const isUser = message.role === 'user';
 
     const formatContent = (content: string) => {
         return content.replace(/\*\*/g, '').replace(/\*/g, '');
     };
+
+    const isDark = theme === 'dark';
 
     return (
         <div className={cn("flex gap-3", isUser ? "flex-row-reverse" : "")}>
@@ -155,7 +181,7 @@ const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
                 className={cn(
                     "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
                     isUser
-                        ? "bg-gray-700"
+                        ? isDark ? "bg-gray-700" : "bg-gray-200"
                         : "bg-gradient-to-br"
                 )}
                 style={!isUser ? {
@@ -163,7 +189,7 @@ const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
                 } : {}}
             >
                 {isUser ? (
-                    <User className="h-4 w-4 text-gray-300" />
+                    <User className="h-4 w-4 text-gray-600 dark:text-gray-300" />
                 ) : (
                     <Bot className="h-4 w-4 text-white" />
                 )}
@@ -172,15 +198,18 @@ const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
                 className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                     isUser
-                        ? "bg-gray-700 text-gray-100"
-                        : "bg-gray-800 text-gray-200 border"
+                        ? isDark ? "bg-gray-700 text-gray-100" : "bg-gray-200 text-gray-900"
+                        : isDark ? "bg-gray-800 text-gray-200 border" : "bg-white text-gray-900 border"
                 )}
                 style={!isUser ? { borderColor: `${mode.accentColor}25` } : {}}
             >
                 <div className="whitespace-pre-wrap text-sm">
                     {formatContent(message.content)}
                 </div>
-                <p className="text-[10px] text-gray-500 mt-1.5">
+                <p className={cn(
+                    "text-[10px] mt-1.5",
+                    isDark ? "text-gray-500" : "text-gray-400"
+                )}>
                     {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </p>
             </div>
@@ -191,11 +220,14 @@ const MessageBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
 const ChatMessages: React.FC = () => {
     const { messages, isLoading } = useAssessment();
     const { mode } = useMode();
+    const { theme } = useTheme();
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    const isDark = theme === 'dark';
 
     if (messages.length === 0) {
         return (
@@ -206,7 +238,7 @@ const ChatMessages: React.FC = () => {
                 >
                     <Bot className="h-8 w-8 text-white" />
                 </div>
-                <p className="text-sm text-gray-400">
+                <p className={cn("text-sm", isDark ? "text-gray-400" : "text-gray-500")}>
                     Faça upload de documentos e comece a perguntar
                 </p>
             </div>
@@ -226,7 +258,11 @@ const ChatMessages: React.FC = () => {
                     >
                         <Bot className="h-4 w-4 text-white" />
                     </div>
-                    <div className="bg-gray-800 rounded-2xl px-4 py-2.5 border" style={{ borderColor: `${mode.accentColor}25` }}>
+                    <div className={cn(
+                        "rounded-2xl px-4 py-2.5 border",
+                        isDark ? "bg-gray-800" : "bg-white",
+                        isDark ? "border-gray-700" : "border-gray-200"
+                    )} style={{ borderColor: `${mode.accentColor}25` }}>
                         <div className="flex gap-1.5">
                             <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: mode.accentColor, animationDelay: '0ms' }} />
                             <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: mode.accentColor, animationDelay: '150ms' }} />
@@ -244,7 +280,9 @@ const ChatInput: React.FC = () => {
     const [input, setInput] = useState('');
     const { addMessage, isLoading, files } = useAssessment();
     const { mode } = useMode();
+    const { theme } = useTheme();
     const inputRef = useRef<HTMLInputElement>(null);
+    const isDark = theme === 'dark';
 
     const handleSubmit = () => {
         if (!input.trim() || isLoading) return;
@@ -284,7 +322,10 @@ const ChatInput: React.FC = () => {
     };
 
     return (
-        <div className="p-4 bg-gray-900/80 rounded-b-2xl border-t border-gray-800">
+        <div className={cn(
+            "p-4 rounded-b-2xl border-t",
+            isDark ? "bg-gray-900/80 border-gray-800" : "bg-white/80 border-gray-200"
+        )}>
             <div className="flex gap-2 items-center">
                 <input
                     ref={inputRef}
@@ -293,10 +334,12 @@ const ChatInput: React.FC = () => {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Pergunte sobre os documentos..."
-                    className="flex-1 rounded-xl border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-1 transition-all"
-                    style={{
-                        focusRing: mode.accentColor,
-                    }}
+                    className={cn(
+                        "flex-1 rounded-xl border px-4 py-2.5 text-sm focus:outline-none focus:ring-1 transition-all",
+                        isDark
+                            ? "border-gray-700 bg-gray-800 text-gray-100 placeholder:text-gray-500"
+                            : "border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400"
+                    )}
                     onFocus={(e) => e.currentTarget.style.borderColor = mode.accentColor}
                     onBlur={(e) => e.currentTarget.style.borderColor = ''}
                 />
@@ -310,12 +353,12 @@ const ChatInput: React.FC = () => {
                 </button>
             </div>
             <div className="flex justify-center gap-3 mt-2">
-                <span className="text-[10px] text-gray-500 flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded bg-gray-800 text-[10px] font-mono">Enter</kbd>
+                <span className={cn("text-[10px] flex items-center gap-1", isDark ? "text-gray-500" : "text-gray-400")}>
+                    <kbd className={cn("px-1.5 py-0.5 rounded text-[10px] font-mono", isDark ? "bg-gray-800" : "bg-gray-100")}>Enter</kbd>
                     <span>para enviar</span>
                 </span>
-                <span className="text-[10px] text-gray-500 flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded bg-gray-800 text-[10px] font-mono">Shift + Enter</kbd>
+                <span className={cn("text-[10px] flex items-center gap-1", isDark ? "text-gray-500" : "text-gray-400")}>
+                    <kbd className={cn("px-1.5 py-0.5 rounded text-[10px] font-mono", isDark ? "bg-gray-800" : "bg-gray-100")}>Shift + Enter</kbd>
                     <span>para nova linha</span>
                 </span>
             </div>
@@ -335,17 +378,22 @@ const DocSection: React.FC<{
     defaultOpen?: boolean;
 }> = ({ title, icon, documents, accentColor, defaultOpen = true }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
 
     if (documents.length === 0) return null;
 
     return (
-        <div className="mb-3">
+        <div className="mb-4">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                className={cn(
+                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors",
+                    isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"
+                )}
             >
                 <span className="text-base">{icon}</span>
-                <span className="flex-1 text-left text-sm font-semibold text-gray-300">
+                <span className={cn("flex-1 text-left text-sm font-semibold", isDark ? "text-gray-300" : "text-gray-700")}>
                     {title}
                 </span>
                 {isOpen ? (
@@ -356,7 +404,7 @@ const DocSection: React.FC<{
                 <span className="text-xs text-gray-500">{documents.length}</span>
             </button>
             {isOpen && (
-                <div className="ml-6 mt-1 space-y-1">
+                <div className="ml-6 mt-2 space-y-2">
                     {documents.map((doc) => (
                         <DocTypeItem key={doc.id} document={doc} accentColor={accentColor} />
                     ))}
@@ -368,6 +416,8 @@ const DocSection: React.FC<{
 
 const DocTypeItem: React.FC<{ document: DocumentType; accentColor: string }> = ({ document, accentColor }) => {
     const { selectedDocType, selectDocument } = useAssessment();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const isSelected = selectedDocType?.id === document.id;
 
     const handleClick = () => {
@@ -382,27 +432,32 @@ const DocTypeItem: React.FC<{ document: DocumentType; accentColor: string }> = (
         <button
             onClick={handleClick}
             className={cn(
-                "w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 group text-left",
+                "w-full flex items-start gap-2 px-3 py-2 rounded-lg transition-all duration-200 group text-left",
                 isSelected
                     ? "bg-opacity-10"
-                    : "hover:bg-gray-800"
+                    : isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"
             )}
             style={isSelected ? { backgroundColor: `${accentColor}15` } : {}}
         >
-            <span className="text-base">{document.icon}</span>
+            <span className="text-base flex-shrink-0">{document.icon}</span>
             <div className="flex-1 min-w-0">
                 <p className={cn(
                     "text-sm font-medium",
-                    isSelected ? "text-gray-100" : "text-gray-300"
+                    isSelected
+                        ? isDark ? "text-gray-100" : "text-gray-900"
+                        : isDark ? "text-gray-300" : "text-gray-700"
                 )}>
                     {document.name}
                 </p>
-                <p className="text-[11px] text-gray-500 truncate">
+                <p className={cn(
+                    "text-xs mt-0.5 leading-relaxed",
+                    isDark ? "text-gray-500" : "text-gray-500"
+                )}>
                     {document.description}
                 </p>
             </div>
             <FileOutput className={cn(
-                "h-4 w-4 transition-opacity flex-shrink-0",
+                "h-4 w-4 transition-opacity flex-shrink-0 mt-0.5",
                 isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
             )} />
         </button>
@@ -412,15 +467,17 @@ const DocTypeItem: React.FC<{ document: DocumentType; accentColor: string }> = (
 const GeneratePanel: React.FC = () => {
     const { selectedDocType, files } = useAssessment();
     const { mode } = useMode();
+    const { theme } = useTheme();
     const [fileName, setFileName] = useState('');
     const [format, setFormat] = useState<'docx' | 'pdf'>('docx');
     const [isGenerating, setIsGenerating] = useState(false);
+    const isDark = theme === 'dark';
 
     if (!selectedDocType) {
         return (
             <div className="text-center py-6">
                 <FileOutput className="h-8 w-8 mx-auto text-gray-500 mb-2" />
-                <p className="text-sm text-gray-400">
+                <p className={cn("text-sm", isDark ? "text-gray-400" : "text-gray-500")}>
                     Selecione um template
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
@@ -445,7 +502,7 @@ const GeneratePanel: React.FC = () => {
                     <span className="text-xl">{selectedDocType.icon}</span>
                     <div className="flex-1">
                         <p className="text-[10px] text-gray-500 uppercase tracking-wide">Selecionado</p>
-                        <p className="font-medium text-gray-200 text-sm">
+                        <p className={cn("font-medium text-sm", isDark ? "text-gray-200" : "text-gray-800")}>
                             {selectedDocType.name}
                         </p>
                     </div>
@@ -453,7 +510,7 @@ const GeneratePanel: React.FC = () => {
             </div>
 
             <div>
-                <label className="text-xs font-medium text-gray-400 block mb-1">
+                <label className={cn("text-xs font-medium block mb-1", isDark ? "text-gray-400" : "text-gray-600")}>
                     Nome do arquivo
                 </label>
                 <input
@@ -461,7 +518,12 @@ const GeneratePanel: React.FC = () => {
                     value={fileName}
                     onChange={(e) => setFileName(e.target.value)}
                     placeholder={selectedDocType.id}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-700 bg-gray-800 text-sm text-gray-100 focus:outline-none focus:ring-1 transition-all"
+                    className={cn(
+                        "w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 transition-all",
+                        isDark
+                            ? "border-gray-700 bg-gray-800 text-gray-100"
+                            : "border-gray-200 bg-gray-50 text-gray-900"
+                    )}
                     onFocus={(e) => e.currentTarget.style.borderColor = mode.accentColor}
                     onBlur={(e) => e.currentTarget.style.borderColor = ''}
                 />
@@ -474,7 +536,9 @@ const GeneratePanel: React.FC = () => {
                         "flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all",
                         format === 'docx'
                             ? "text-white"
-                            : "border border-gray-700 text-gray-300 hover:bg-gray-800"
+                            : isDark
+                                ? "border border-gray-700 text-gray-300 hover:bg-gray-800"
+                                : "border border-gray-200 text-gray-700 hover:bg-gray-50"
                     )}
                     style={format === 'docx' ? { backgroundColor: mode.accentColor } : {}}
                 >
@@ -486,7 +550,9 @@ const GeneratePanel: React.FC = () => {
                         "flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all",
                         format === 'pdf'
                             ? "text-white"
-                            : "border border-gray-700 text-gray-300 hover:bg-gray-800"
+                            : isDark
+                                ? "border border-gray-700 text-gray-300 hover:bg-gray-800"
+                                : "border border-gray-200 text-gray-700 hover:bg-gray-50"
                     )}
                     style={format === 'pdf' ? { backgroundColor: mode.accentColor } : {}}
                 >
@@ -520,7 +586,7 @@ const GeneratePanel: React.FC = () => {
             </button>
 
             {files.length === 0 && (
-                <p className="text-xs text-center text-amber-500">
+                <p className="text-xs text-center text-amber-600 dark:text-amber-400">
                     Atenção: Adicione documentos para gerar relatórios precisos
                 </p>
             )}
@@ -529,7 +595,7 @@ const GeneratePanel: React.FC = () => {
 };
 
 // ============================================
-// MAIN ASSESSMENT PAGE - Fundo sólido escuro
+// MAIN ASSESSMENT PAGE
 // ============================================
 
 const AssessmentContent: React.FC = () => {
@@ -544,7 +610,7 @@ const AssessmentContent: React.FC = () => {
 
     const governanceDocs = getDocumentsByContext('governance');
     const devopsDocs = getDocumentsByContext('devops');
-    const fullDocs = getDocumentsByContext('full');
+    const isDark = theme === 'dark';
 
     const getModeIcon = () => {
         switch (mode.id) {
@@ -556,18 +622,24 @@ const AssessmentContent: React.FC = () => {
     };
 
     return (
-        <div className="h-screen bg-gray-900 flex flex-col">
-            {/* Top Bar - Sem borda, apenas cor sólida */}
-            <header className="flex items-center justify-between h-14 px-6 bg-gray-900 flex-shrink-0">
+        <div className={cn("h-screen flex flex-col", isDark ? "bg-gray-900" : "bg-gray-100")}>
+            {/* Top Bar */}
+            <header className={cn(
+                "flex items-center justify-between h-14 px-6 flex-shrink-0",
+                isDark ? "bg-gray-900" : "bg-gray-100"
+            )}>
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/')}
-                        className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                        className={cn(
+                            "flex items-center gap-2 text-sm transition-colors",
+                            isDark ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"
+                        )}
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span>Projetos</span>
                     </button>
-                    <div className="w-px h-5 bg-gray-800" />
+                    <div className={cn("w-px h-5", isDark ? "bg-gray-800" : "bg-gray-300")} />
                     <div className="flex items-center gap-2">
                         <div
                             className="w-6 h-6 rounded-lg flex items-center justify-center shadow-sm"
@@ -575,13 +647,18 @@ const AssessmentContent: React.FC = () => {
                         >
                             <FolderOpen className="h-3 w-3 text-white" />
                         </div>
-                        <span className="text-sm font-medium text-gray-200">
+                        <span className={cn("text-sm font-medium", isDark ? "text-gray-200" : "text-gray-800")}>
                             {projectName}
                         </span>
                     </div>
                     <button
                         onClick={clearChat}
-                        className="text-xs px-3 py-1 rounded-full bg-gray-800 text-gray-400 hover:bg-gray-700 transition-colors"
+                        className={cn(
+                            "text-xs px-3 py-1 rounded-full transition-colors",
+                            isDark
+                                ? "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                        )}
                     >
                         Limpar conversa
                     </button>
@@ -597,46 +674,65 @@ const AssessmentContent: React.FC = () => {
                     </button>
                     <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700 transition-all"
+                        className={cn(
+                            "p-2 rounded-lg transition-all",
+                            isDark
+                                ? "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                        )}
                     >
-                        {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                     </button>
                 </div>
             </header>
 
-            {/* 3-Column Layout - Cards Flutuantes */}
+            {/* 3-Column Layout */}
             <div className="flex-1 overflow-hidden p-4 gap-4">
                 <div className="flex h-full gap-4">
                     {/* LEFT PANEL - Files Card */}
-                    <div className="w-[280px] flex flex-col bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-800 overflow-hidden flex-shrink-0">
-                        <div className="p-4 border-b border-gray-800">
-                            <h2 className="text-sm font-semibold text-gray-200 mb-3">
-                                Documentos
+                    <div className={cn(
+                        "w-[280px] flex flex-col rounded-2xl shadow-xl border overflow-hidden flex-shrink-0",
+                        isDark
+                            ? "bg-gray-800/50 backdrop-blur-sm border-gray-800"
+                            : "bg-white/80 backdrop-blur-sm border-gray-200"
+                    )}>
+                        <div className={cn("p-4 border-b", isDark ? "border-gray-800" : "border-gray-200")}>
+                            <h2 className={cn("text-xs font-semibold mb-3 tracking-wide", isDark ? "text-gray-400" : "text-gray-500")}>
+                                FONTES DE DADOS
                             </h2>
                             <FileUpload />
                         </div>
-                        <div className="flex-1 overflow-y-auto p-3">
-                            <FileList />
-                        </div>
+                        <FileList />
                     </div>
 
                     {/* CENTER PANEL - Chat Card */}
-                    <div className="flex-1 flex flex-col bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-800 overflow-hidden min-w-0">
+                    <div className={cn(
+                        "flex-1 flex flex-col rounded-2xl shadow-xl border overflow-hidden min-w-0",
+                        isDark
+                            ? "bg-gray-800/50 backdrop-blur-sm border-gray-800"
+                            : "bg-white/80 backdrop-blur-sm border-gray-200"
+                    )}>
                         <ChatMessages />
                         <ChatInput />
                     </div>
 
                     {/* RIGHT PANEL - Studio Card */}
-                    <div className="w-[300px] flex flex-col bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-800 overflow-hidden flex-shrink-0">
-                        <div className="p-4 border-b border-gray-800">
-                            <h2 className="text-sm font-semibold text-gray-200">
+                    <div className={cn(
+                        "w-[320px] flex flex-col rounded-2xl shadow-xl border overflow-hidden flex-shrink-0",
+                        isDark
+                            ? "bg-gray-800/50 backdrop-blur-sm border-gray-800"
+                            : "bg-white/80 backdrop-blur-sm border-gray-200"
+                    )}>
+                        <div className={cn("p-4 border-b", isDark ? "border-gray-800" : "border-gray-200")}>
+                            <h2 className={cn("text-sm font-semibold", isDark ? "text-gray-200" : "text-gray-800")}>
                                 Estúdio
                             </h2>
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className={cn("text-xs mt-0.5", isDark ? "text-gray-500" : "text-gray-500")}>
                                 Templates para geração de relatórios
                             </p>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                            {/* Processos & Governança - sempre aparece no modo full ou governance */}
                             {(mode.id === 'full' || mode.id === 'governance') && governanceDocs.length > 0 && (
                                 <DocSection
                                     title="Processos & Governança"
@@ -646,6 +742,7 @@ const AssessmentContent: React.FC = () => {
                                     defaultOpen={true}
                                 />
                             )}
+                            {/* DevOps & Cloud - sempre aparece no modo full ou devops */}
                             {(mode.id === 'full' || mode.id === 'devops') && devopsDocs.length > 0 && (
                                 <DocSection
                                     title="DevOps & Cloud"
@@ -655,17 +752,8 @@ const AssessmentContent: React.FC = () => {
                                     defaultOpen={true}
                                 />
                             )}
-                            {mode.id === 'full' && fullDocs.length > 0 && (
-                                <DocSection
-                                    title="Full Spectrum"
-                                    icon="🎯"
-                                    documents={fullDocs}
-                                    accentColor={mode.accentColor}
-                                    defaultOpen={false}
-                                />
-                            )}
                         </div>
-                        <div className="p-4 border-t border-gray-800">
+                        <div className={cn("p-4 border-t", isDark ? "border-gray-800" : "border-gray-200")}>
                             <GeneratePanel />
                         </div>
                     </div>
@@ -680,21 +768,33 @@ export const AssessmentPage: React.FC = () => {
     const { projectId } = useParams<{ projectId: string }>();
     const { getProject } = useProjects();
     const project = projectId ? getProject(projectId) : null;
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
 
     if (!project) {
         return (
-            <div className="h-screen flex items-center justify-center bg-gray-900">
-                <div className="text-center bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-800">
+            <div className={cn("h-screen flex items-center justify-center", isDark ? "bg-gray-900" : "bg-gray-100")}>
+                <div className={cn(
+                    "text-center rounded-2xl p-8 shadow-xl border",
+                    isDark
+                        ? "bg-gray-800/50 backdrop-blur-sm border-gray-800"
+                        : "bg-white/80 backdrop-blur-sm border-gray-200"
+                )}>
                     <FolderOpen className="h-12 w-12 mx-auto text-gray-500 mb-3" />
-                    <h2 className="text-lg font-semibold text-gray-200 mb-1">
+                    <h2 className={cn("text-lg font-semibold mb-1", isDark ? "text-gray-200" : "text-gray-800")}>
                         Projeto não encontrado
                     </h2>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className={cn("text-sm mb-4", isDark ? "text-gray-500" : "text-gray-500")}>
                         O projeto não existe ou foi removido
                     </p>
                     <button
                         onClick={() => window.location.href = '/'}
-                        className="px-4 py-2 text-sm rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 transition-colors"
+                        className={cn(
+                            "px-4 py-2 text-sm rounded-xl transition-colors",
+                            isDark
+                                ? "bg-gray-800 text-gray-200 hover:bg-gray-700"
+                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        )}
                     >
                         Voltar para Home
                     </button>
