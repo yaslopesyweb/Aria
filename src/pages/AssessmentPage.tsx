@@ -8,7 +8,7 @@ import { Button } from '@/components/common/Button';
 import {
     ArrowLeft, Sun, Moon, FolderOpen, Upload, FileText, Trash2,
     Send, Bot, User, ChevronRight, ChevronDown, Download, FileOutput,
-    Sparkles, Shield, Cloud, Layers, CheckCircle, Clock, X
+    Sparkles, Shield, Cloud, Layers, CheckCircle, Clock, X, Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UploadedFile, ChatMessage, DocumentType } from '@/types';
@@ -76,12 +76,22 @@ const FileUpload: React.FC = () => {
 };
 
 const FileList: React.FC = () => {
-    const { files, removeFile } = useAssessment();
+    const { files, removeFile, selectedFileIds, toggleFileSelection, selectAllFiles, deselectAllFiles } = useAssessment();
     const { theme } = useTheme();
-
-    // Calcular tamanho total
+    const isDark = theme === 'dark';
+    
     const totalSize = files.reduce((acc, file) => acc + file.size, 0);
     const totalSizeMB = (totalSize / 1024 / 1024).toFixed(2);
+    const allSelected = files.length > 0 && selectedFileIds.length === files.length;
+    const someSelected = selectedFileIds.length > 0 && selectedFileIds.length < files.length;
+
+    const handleToggleAll = () => {
+        if (allSelected) {
+            deselectAllFiles();
+        } else {
+            selectAllFiles();
+        }
+    };
 
     if (files.length === 0) {
         return (
@@ -111,49 +121,103 @@ const FileList: React.FC = () => {
     return (
         <>
             <div className="flex-1 overflow-y-auto p-3">
-                <div className="space-y-2">
-                    {files.map((file) => (
-                        <div
-                            key={file.id}
-                            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all group"
-                        >
-                            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
-                                <FileText className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                {/* Header com seleção de todas as fontes */}
+                <div className="mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                    <button
+                        onClick={handleToggleAll}
+                        className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
+                    >
+                        <div className="flex items-center gap-2">
+                            <div className={cn(
+                                "w-4 h-4 rounded border-2 flex items-center justify-center transition-all",
+                                allSelected 
+                                    ? "bg-blue-500 border-blue-500" 
+                                    : someSelected 
+                                        ? "bg-blue-500/50 border-blue-500" 
+                                        : "border-gray-400 dark:border-gray-500"
+                            )}>
+                                {(allSelected || someSelected) && (
+                                    <Check className="w-3 h-3 text-white" />
+                                )}
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">
-                                    {file.name}
-                                </p>
-                                <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="text-xs text-gray-500 dark:text-gray-500">
-                                        {(file.size / 1024 / 1024).toFixed(2)} MB
-                                    </span>
-                                    {file.status === 'ready' ? (
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                            <span className="text-[10px] text-green-600 dark:text-green-400">Pronto</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                                            <span className="text-[10px] text-yellow-600 dark:text-yellow-400">Processando</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => removeFile(file.id)}
-                                className="opacity-0 group-hover:opacity-100 transition-all p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
-                            >
-                                <Trash2 className="h-4 w-4 text-gray-400 hover:text-red-500" />
-                            </button>
+                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                Selecionar todas as fontes
+                            </span>
                         </div>
-                    ))}
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {selectedFileIds.length} / {files.length}
+                        </span>
+                    </button>
+                </div>
+
+                {/* Lista de documentos */}
+                <div className="space-y-2">
+                    {files.map((file) => {
+                        const isSelected = selectedFileIds.includes(file.id);
+                        
+                        return (
+                            <div
+                                key={file.id}
+                                className={cn(
+                                    "flex items-center gap-2 p-2 rounded-lg transition-all group",
+                                    isSelected 
+                                        ? "bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800"
+                                        : "bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                )}
+                            >
+                                {/* Checkbox de seleção */}
+                                <button
+                                    onClick={() => toggleFileSelection(file.id)}
+                                    className="flex-shrink-0 p-0.5"
+                                >
+                                    <div className={cn(
+                                        "w-4 h-4 rounded border-2 flex items-center justify-center transition-all",
+                                        isSelected 
+                                            ? "bg-blue-500 border-blue-500" 
+                                            : "border-gray-400 dark:border-gray-500 hover:border-blue-400"
+                                    )}>
+                                        {isSelected && <Check className="w-3 h-3 text-white" />}
+                                    </div>
+                                </button>
+
+                                <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                                    <FileText className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">
+                                        {file.name}
+                                    </p>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <span className="text-xs text-gray-500 dark:text-gray-500">
+                                            {(file.size / 1024 / 1024).toFixed(2)} MB
+                                        </span>
+                                        {file.status === 'ready' ? (
+                                            <div className="flex items-center gap-1">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                                <span className="text-[10px] text-green-600 dark:text-green-400">Pronto</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-1">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+                                                <span className="text-[10px] text-yellow-600 dark:text-yellow-400">Processando</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => removeFile(file.id)}
+                                    className="opacity-0 group-hover:opacity-100 transition-all p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex-shrink-0"
+                                >
+                                    <Trash2 className="h-3.5 w-3.5 text-gray-400 hover:text-red-500" />
+                                </button>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
             <div className="p-3 border-t border-gray-200 dark:border-gray-800">
                 <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    {files.length} documento(s) • {totalSizeMB} MB
+                    {selectedFileIds.length} de {files.length} documento(s) selecionado(s) • {totalSizeMB} MB
                 </div>
             </div>
         </>
@@ -278,7 +342,7 @@ const ChatMessages: React.FC = () => {
 
 const ChatInput: React.FC = () => {
     const [input, setInput] = useState('');
-    const { addMessage, isLoading, files } = useAssessment();
+    const { addMessage, isLoading, files, selectedFileIds } = useAssessment();
     const { mode } = useMode();
     const { theme } = useTheme();
     const inputRef = useRef<HTMLInputElement>(null);
@@ -300,8 +364,10 @@ const ChatInput: React.FC = () => {
             let response = '';
             if (files.length === 0) {
                 response = `Sobre "${input}": Nenhum documento foi carregado. Faça upload de documentos na barra lateral para análise.`;
+            } else if (selectedFileIds.length === 0) {
+                response = `Sobre "${input}": Nenhum documento está selecionado. Selecione os documentos que deseja usar na barra lateral esquerda.`;
             } else {
-                response = `Sobre "${input}": Com base nos ${files.length} documento(s) carregados, identifiquei informações relevantes. Para uma resposta detalhada, gere um relatório específico no Estúdio.`;
+                response = `Sobre "${input}": Com base nos ${selectedFileIds.length} documento(s) selecionados, identifiquei informações relevantes. Para uma resposta detalhada, gere um relatório específico no Estúdio.`;
             }
 
             const aiResponse: ChatMessage = {
@@ -465,7 +531,7 @@ const DocTypeItem: React.FC<{ document: DocumentType; accentColor: string }> = (
 };
 
 const GeneratePanel: React.FC = () => {
-    const { selectedDocType, files } = useAssessment();
+    const { selectedDocType, files, selectedFileIds } = useAssessment();
     const { mode } = useMode();
     const { theme } = useTheme();
     const [fileName, setFileName] = useState('');
@@ -491,7 +557,7 @@ const GeneratePanel: React.FC = () => {
         setIsGenerating(true);
         setTimeout(() => {
             setIsGenerating(false);
-            alert(`Documento "${selectedDocType.name}" gerado!\n\nFormato: ${format.toUpperCase()}\nBaseado em: ${files.length} documento(s)`);
+            alert(`Documento "${selectedDocType.name}" gerado!\n\nFormato: ${format.toUpperCase()}\nBaseado em: ${selectedFileIds.length} documento(s) selecionado(s)`);
         }, 2000);
     };
 
@@ -562,10 +628,10 @@ const GeneratePanel: React.FC = () => {
 
             <button
                 onClick={handleGenerate}
-                disabled={files.length === 0 || isGenerating}
+                disabled={selectedFileIds.length === 0 || isGenerating}
                 className={cn(
                     "w-full py-2 rounded-xl text-white font-medium transition-all duration-200 flex items-center justify-center gap-2",
-                    files.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.02] active:scale-[0.98]"
+                    selectedFileIds.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:scale-[1.02] active:scale-[0.98]"
                 )}
                 style={{ backgroundColor: mode.accentColor }}
             >
@@ -585,9 +651,9 @@ const GeneratePanel: React.FC = () => {
                 )}
             </button>
 
-            {files.length === 0 && (
+            {selectedFileIds.length === 0 && (
                 <p className="text-xs text-center text-amber-600 dark:text-amber-400">
-                    Atenção: Adicione documentos para gerar relatórios precisos
+                    Atenção: Selecione pelo menos um documento na barra lateral
                 </p>
             )}
         </div>
@@ -601,7 +667,7 @@ const GeneratePanel: React.FC = () => {
 const AssessmentContent: React.FC = () => {
     const { mode, toggleMode } = useMode();
     const { theme, toggleTheme } = useTheme();
-    const { getDocumentsByContext, clearChat, projectId } = useAssessment();
+    const { getDocumentsByContext, clearChat, projectId, files, selectedFileIds } = useAssessment();
     const { getProject } = useProjects();
     const navigate = useNavigate();
 
@@ -732,7 +798,6 @@ const AssessmentContent: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                            {/* Processos & Governança - sempre aparece no modo full ou governance */}
                             {(mode.id === 'full' || mode.id === 'governance') && governanceDocs.length > 0 && (
                                 <DocSection
                                     title="Processos & Governança"
@@ -742,7 +807,6 @@ const AssessmentContent: React.FC = () => {
                                     defaultOpen={true}
                                 />
                             )}
-                            {/* DevOps & Cloud - sempre aparece no modo full ou devops */}
                             {(mode.id === 'full' || mode.id === 'devops') && devopsDocs.length > 0 && (
                                 <DocSection
                                     title="DevOps & Cloud"
