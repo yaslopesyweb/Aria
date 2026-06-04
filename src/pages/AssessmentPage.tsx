@@ -800,7 +800,7 @@ const AssessmentContent: React.FC = () => {
                         <div className="flex-1 overflow-y-auto p-4 space-y-2">
                             {(mode.id === 'full' || mode.id === 'governance') && governanceDocs.length > 0 && (
                                 <DocSection
-                                    title="Processos & Governança"
+                                    title="Business Process Discovery & GRC"
                                     icon="📋"
                                     documents={governanceDocs}
                                     accentColor={mode.accentColor}
@@ -809,7 +809,7 @@ const AssessmentContent: React.FC = () => {
                             )}
                             {(mode.id === 'full' || mode.id === 'devops') && devopsDocs.length > 0 && (
                                 <DocSection
-                                    title="DevOps & Cloud"
+                                    title="DevOps & Platform Engineering"
                                     icon="⚙️"
                                     documents={devopsDocs}
                                     accentColor={mode.accentColor}

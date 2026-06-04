@@ -13,9 +13,33 @@ interface NewProjectModalProps {
 }
 
 const contextOptions = [
-  { id: 'devops' as ContextType, label: 'DevOps & Cloud', icon: Cloud, description: 'CI/CD, IaC, Segurança', color: 'emerald', accentColor: '#10B981', ringColor: 'ring-emerald-500/50' },
-  { id: 'governance' as ContextType, label: 'Governança', icon: Shield, description: 'Processos, Compliance, LGPD', color: 'indigo', accentColor: '#6366F1', ringColor: 'ring-indigo-500/50' },
-  { id: 'full' as ContextType, label: 'Full Spectrum', icon: Layers, description: 'Governança + DevOps — Assessment Completo', color: 'purple', accentColor: '#8B5CF6', ringColor: 'ring-purple-500/50' },
+  { 
+    id: 'governance' as ContextType, 
+    label: 'Business Process Discovery & GRC', 
+    icon: Shield, 
+    description: 'Clareza operacional + Decisão estratégica | Gargalos, riscos ocultos e roadmap priorizado', 
+    color: 'indigo', 
+    accentColor: '#6366F1', 
+    ringColor: 'ring-indigo-500/50' 
+  },
+  { 
+    id: 'devops' as ContextType, 
+    label: 'DevOps & Platform Engineering', 
+    icon: Cloud, 
+    description: 'Observabilidade | FinOps | DevSecOps | CI/CD | Cloud Migration', 
+    color: 'emerald', 
+    accentColor: '#10B981', 
+    ringColor: 'ring-emerald-500/50' 
+  },
+  { 
+    id: 'full' as ContextType, 
+    label: 'Full Spectrum', 
+    icon: Layers, 
+    description: 'Estratégia + Execução | Governança integrada com engenharia de plataforma', 
+    color: 'purple', 
+    accentColor: '#8B5CF6', 
+    ringColor: 'ring-purple-500/50' 
+  },
 ];
 
 const getColorStyles = (color: string) => {
@@ -47,6 +71,7 @@ const getColorStyles = (color: string) => {
 
 export const NewProjectModal: React.FC<NewProjectModalProps> = ({ isOpen, onClose, editId }) => {
   const { createProject, updateProject, getProject } = useProjects();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mode } = useMode();
   const [name, setName] = useState('');
   const [client, setClient] = useState('');

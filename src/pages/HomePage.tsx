@@ -196,11 +196,11 @@ export const HomePage: React.FC = () => {
           </div>
           <div className="bg-emerald-50/50 dark:bg-emerald-950/30 backdrop-blur-sm rounded-xl p-4 border border-emerald-100 dark:border-emerald-900">
             <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.devops}</div>
-            <div className="text-xs text-emerald-600/70 dark:text-emerald-400/70 mt-1">DevOps & Cloud</div>
+            <div className="text-xs text-emerald-600/70 dark:text-emerald-400/70 mt-1">DevOps & Platform Engineering</div>
           </div>
           <div className="bg-indigo-50/50 dark:bg-indigo-950/30 backdrop-blur-sm rounded-xl p-4 border border-indigo-100 dark:border-indigo-900">
             <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{stats.governance}</div>
-            <div className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Processos & Governança</div>
+            <div className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Business Process Discovery & GRC</div>
           </div>
           <div className="bg-purple-50/50 dark:bg-purple-950/30 backdrop-blur-sm rounded-xl p-4 border border-purple-100 dark:border-purple-900">
             <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats.full}</div>

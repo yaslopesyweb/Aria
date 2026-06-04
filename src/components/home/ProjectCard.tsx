@@ -14,7 +14,7 @@ interface ProjectCardProps {
 }
 
 const contextConfig = {
-  devops: { label: 'DevOps & Cloud', icon: Cloud, color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-50 dark:bg-emerald-950/50' },
+  devops: { label: 'DevOps & Platform Engineering', icon: Cloud, color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-50 dark:bg-emerald-950/50' },
   governance: { label: 'Governança', icon: Shield, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
   full: { label: 'Full Spectrum', icon: Layers, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-950/50' },
 };

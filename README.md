@@ -18,8 +18,8 @@
 
 **ARIA** é uma plataforma de assessment inteligente desenvolvida para automatizar e potencializar o processo de avaliação de maturidade em dois contextos principais de TI:
 
-- **Processos & Governança** - Focado em ISO 27001, LGPD, COBIT, RIPD e BPM
-- **DevOps & Cloud** - Focado em Well-Architected, DORA Metrics, CIS Controls, DevSecOps e FinOps
+- **Business Process Discovery & GRC** - Focado em ISO 27001, LGPD, COBIT, RIPD e BPM
+- **DevOps & Platform Engineering** - Focado em Well-Architected, DORA Metrics, CIS Controls, DevSecOps e FinOps
 - **Full Spectrum** - Visão integrada que combina ambos os contextos para uma avaliação completa
 
 ### 🎯 **Por que o ARIA foi criado?**
